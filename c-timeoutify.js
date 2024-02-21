@@ -7,9 +7,9 @@ const URL = 'https://developer.mozilla.org/';
 const ITERATIONS = Number(process.env['ITERATIONS']) || 10;
 const TIMEOUT = 1000;
 
-const metaufilTimeoutify = async () => await timeoutify(fetch(URL), TIMEOUT);
+const metautilTimeoutify = async () => await timeoutify(fetch(URL), TIMEOUT);
 
 (async () => {
-  const result = await measure(metaufilTimeoutify, ITERATIONS);
+  const result = await measure(metautilTimeoutify, ITERATIONS);
   console.table(calculateAverage(result));
 })();
