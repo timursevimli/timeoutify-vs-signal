@@ -5,7 +5,7 @@ This repository compares memory usage between timeoutify and signal
 ## Usage
 
 ```bash
-  npm install
+  npm start
 
   node --expose-gc a-controller.js
   node --expose-gc b-signal.js

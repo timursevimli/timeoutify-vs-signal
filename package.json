@@ -5,8 +5,5 @@
   "license": "MIT",
   "scripts": {
     "start": "node run.js"
-  },
-  "dependencies": {
-    "metautil": "^5.2.1"
   }
 }
