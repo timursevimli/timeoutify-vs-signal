@@ -1,38 +1,29 @@
 'use strict';
 
-const { performance } = require('perf_hooks');
+const UNITS = ['', ' Kb', ' Mb', ' Gb'];
 
-const usedMemory = () => {
-  if (global.gc) gc();
-  return process.memoryUsage().heapUsed / 1024 / 1024;
+const bytesToSize = (bytes) => {
+  if (bytes === 0) return '0';
+  const exp = Math.floor(Math.log(bytes) / Math.log(1000));
+  const size = bytes / 1000 ** exp;
+  const short = Math.round(size, 2);
+  const unit = UNITS[exp];
+  return short + unit;
 };
 
-const measure = async (fn, iterations) => {
-  const statistics = new Array(iterations).fill(null);
-  for (let i = 0; i < iterations; i++) {
-    const startMemory = usedMemory();
-    const startTime = performance.now();
-    await fn();
-    statistics[i] = {
-      time: performance.now() - startTime,
-      memory: usedMemory() - startMemory,
-    };
-  }
-  return { name: fn.name, statistics };
+const diff = (a, b) => ({
+  rss: bytesToSize(a.rss - b.rss),
+  heapTotal: bytesToSize(a.heapTotal - b.heapTotal),
+  heapUsed: bytesToSize(a.heapUsed - b.heapUsed),
+  external: bytesToSize(a.external - b.external),
+});
+
+const measure = (fn, iterations) => {
+  const before = process.memoryUsage();
+  for (let i = 0; i < iterations; i++) fn();
+  const after = process.memoryUsage();
+
+  console.log(`${fn.name} Memory Diff:`, diff(after, before));
 };
 
-const calculateAverage = ({ statistics, name }) => {
-  const { memory, time } = statistics.reduce((sum, statistic) => ({
-    time: sum.time + statistic.time,
-    memory: sum.memory + statistic.memory,
-  }), { time: 0, memory: 0 });
-
-  return {
-    name,
-    time,
-    avgTime: time / statistics.length,
-    memory: `${memory.toFixed(2)} MB`,
-  };
-};
-
-module.exports = { measure, calculateAverage };
+module.exports = { measure };
