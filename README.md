@@ -6,11 +6,4 @@ This repository compares memory usage between timeoutify and signal
 
 ```bash
   npm start
-
-  node --expose-gc a-controller.js
-  node --expose-gc b-signal.js
-  node --expose-gc c-timeoutify.js
-
-  # or use ITERATIONS environment for assign iteration count
-  # ITERATIONS=50 node --expose-gc c-timeoutify.js
 ```
