@@ -28,5 +28,4 @@ const timeoutify = (promise, msec) =>
 const metautilTimeoutify = () => timeoutify(new Promise(() => {}), TIMEOUT);
 
 measure(metautilTimeoutify, ITERATIONS);
-require('node:v8').writeHeapSnapshot('timeoutify.heapsnapshot');
 process.exit(0);
