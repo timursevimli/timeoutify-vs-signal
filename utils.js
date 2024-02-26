@@ -1,5 +1,7 @@
 'use strict';
 
+const v8 = require('node:v8');
+
 const UNITS = ['', ' Kb', ' Mb', ' Gb'];
 
 const bytesToSize = (bytes) => {
@@ -18,12 +20,17 @@ const diff = (a, b) => ({
   external: bytesToSize(a.external - b.external),
 });
 
-const measure = (fn, iterations) => {
-  const before = process.memoryUsage();
-  for (let i = 0; i < iterations; i++) fn();
-  const after = process.memoryUsage();
+const takeSnapshot = (name) => {
+  v8.writeHeapSnapshot(`${name}.heapsnapshot`);
+};
 
+const measure = (fn, iterations) => {
+  const tmp = [];
+  const before = process.memoryUsage();
+  for (let i = 0; i < iterations; i++) tmp.push(fn());
+  const after = process.memoryUsage();
   console.log(`${fn.name} Memory Diff:`, diff(after, before));
+  takeSnapshot(fn.name);
 };
 
 module.exports = { measure };
